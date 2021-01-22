@@ -1,29 +1,24 @@
 package tests;
 
-import io.restassured.RestAssured;
 import model.UserModel;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static utils.RandomGeneration.generateString;
 
 public class ReqresTests {
 
-    @BeforeAll
-    static void beforeAll() {
-        RestAssured.baseURI = "https://reqres.in";
-    }
-
     @Test
     @DisplayName("Check list users isn't empty")
     void getListUsers() {
-        get("/api/users?page=2")
-                .then().log().all()
+        given()
+                .spec(Specification.spec())
+                .get("/api/users?page=2")
+                .then()
                 .statusCode(200)
                 .body("support.text", equalTo("To keep ReqRes free, contributions towards server costs are appreciated!"));
     }
@@ -36,6 +31,7 @@ public class ReqresTests {
         userModel.setJob(generateString(5));
 
         given()
+                .spec(Specification.spec())
                 .body(userModel)
                 .post("/api/users")
                 .then()
@@ -45,11 +41,14 @@ public class ReqresTests {
 
 
     @Test
-    @DisplayName("Create invalid user")
-    void createInvalidUser() {
-        post("/api/users")
+    @DisplayName("Create valid user without body")
+    void createValidUserWithoutBody() {
+        given()
+                .spec(Specification.spec())
+                .post("/api/user")
                 .then()
-                .statusCode(415);
+                .statusCode(201)
+                .body("id", not(emptyString()));
     }
 
     @Test
@@ -61,6 +60,7 @@ public class ReqresTests {
         }};
 
         UserModel userModel = given()
+                .spec(Specification.spec())
                 .body(data)
                 .post("/api/users")
                 .then()
@@ -68,7 +68,9 @@ public class ReqresTests {
                 .body("id", not(emptyString()))
                 .extract().as(UserModel.class);
 
-        delete("/api/users" + userModel.getId())
+        given()
+                .spec(Specification.spec())
+                .delete("/api/users" + userModel.getId())
                 .then()
                 .statusCode(204);
 
@@ -87,6 +89,7 @@ public class ReqresTests {
         userModel1.setJob(generateString(6));
 
         UserModel userModel = given()
+                .spec(Specification.spec())
                 .body(data)
                 .post("/api/users")
                 .then()
@@ -95,6 +98,7 @@ public class ReqresTests {
                 .extract().body().as(UserModel.class);
 
         given()
+                .spec(Specification.spec())
                 .body(userModel1)
                 .put("/api/users" + userModel.getId())
                 .then()

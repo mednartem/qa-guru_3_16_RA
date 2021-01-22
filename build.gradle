@@ -1,6 +1,6 @@
 plugins {
     id 'java-library'
-    id 'application'
+    id 'io.qameta.allure' version '2.8.1'
 }
 
 ext {
@@ -12,14 +12,25 @@ repositories {
 }
 
 dependencies {
-    testImplementation "io.rest-assured:rest-assured:4.1.2"
+    testImplementation "io.rest-assured:rest-assured:4.2.0"
     testImplementation "com.fasterxml.jackson.core:jackson-databind:2.11.2"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testCompile "io.qameta.allure:allure-rest-assured:2.13.5"
+    testCompile "io.qameta.allure:allure-java-commons:2.13.5"
 }
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+allure {
+    autoconfigure = true
+    version = '2.13.5'
+
+    useJUnit5() {
+        version = '2.13.5'
+    }
 }
 
 test {
