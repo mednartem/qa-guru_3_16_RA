@@ -1,0 +1,27 @@
+plugins {
+    id 'java-library'
+    id 'application'
+}
+
+ext {
+    junitVersion = "5.7.0"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation "io.rest-assured:rest-assured:4.1.2"
+    testImplementation "com.fasterxml.jackson.core:jackson-databind:2.11.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}
