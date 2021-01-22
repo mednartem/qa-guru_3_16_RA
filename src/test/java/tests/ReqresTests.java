@@ -78,10 +78,9 @@ public class ReqresTests {
     @Test
     @DisplayName("Update user")
     void updateUser() {
-        HashMap<String, String> data = new HashMap<>() {{
-            put("name", generateString(10));
-            put("job", generateString(5));
-        }};
+        HashMap<String, String> data = new HashMap<>();
+        data.put("name", generateString(10));
+        data.put("job", generateString(5));
 
         UserModel userModel1 = new UserModel();
         userModel1.setName(generateString(10));
