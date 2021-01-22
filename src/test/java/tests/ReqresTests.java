@@ -17,7 +17,7 @@ public class ReqresTests {
 
     @BeforeAll
     static void beforeAll() {
-        RestAssured.baseURI = "https://reqres.in/";
+        RestAssured.baseURI = "https://reqres.in";
     }
 
     @Test
