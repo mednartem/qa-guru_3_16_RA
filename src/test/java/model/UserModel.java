@@ -31,13 +31,4 @@ public class UserModel {
     public void setId(String id) {
         this.id = id;
     }
-
-    @Override
-    public String toString() {
-        return "UserModel{" +
-                "name='" + name + '\'' +
-                ", job='" + job + '\'' +
-                ", id='" + id + '\'' +
-                '}';
-    }
 }
