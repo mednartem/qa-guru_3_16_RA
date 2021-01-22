@@ -8,9 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
-import static com.fasterxml.jackson.databind.ObjectWriter.Prefetch.empty;
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static utils.RandomGeneration.generateString;
 
 public class ReqresTests {
@@ -24,23 +23,24 @@ public class ReqresTests {
     @DisplayName("Check list users isn't empty")
     void getListUsers() {
         get("/api/users?page=2")
-                .then()
+                .then().log().all()
                 .statusCode(200)
-                .body("data", not(empty));
+                .body("support.text", equalTo("To keep ReqRes free, contributions towards server costs are appreciated!"));
     }
 
     @Test
     @DisplayName("Create valid user")
     void createValidUser() {
+        UserModel userModel = new UserModel();
+        userModel.setName(generateString(10));
+        userModel.setJob(generateString(5));
+
         given()
-                .body(new HashMap<String, String>() {{
-                    put("name", generateString(10));
-                    put("job", generateString(5));
-                }})
+                .body(userModel)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
-                .body("id", not(empty));
+                .body("id", not(emptyString()));
     }
 
 
@@ -50,21 +50,22 @@ public class ReqresTests {
         post("/api/users")
                 .then()
                 .statusCode(415);
-
     }
 
     @Test
     @DisplayName("Delete created user")
     void deleteCreatedUser() {
+        HashMap<String, String> data = new HashMap<>() {{
+            put("name", generateString(10));
+            put("job", generateString(5));
+        }};
+
         UserModel userModel = given()
-                .body(new HashMap<String, String>() {{
-                    put("name", generateString(10));
-                    put("job", generateString(5));
-                }})
+                .body(data)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
-                .body("id", not(empty))
+                .body("id", not(emptyString()))
                 .extract().as(UserModel.class);
 
         delete("/api/users" + userModel.getId())
@@ -77,25 +78,28 @@ public class ReqresTests {
     @Test
     @DisplayName("Update user")
     void updateUser() {
-        UserModel userModel = new UserModel();
-        userModel.setName(generateString(10));
-        userModel.setJob(generateString(6));
+        HashMap<String, String> data = new HashMap<>() {{
+            put("name", generateString(10));
+            put("job", generateString(5));
+        }};
 
-        given()
-                .body(new HashMap<String, String>() {{
-                    put("name", generateString(10));
-                    put("job", generateString(5));
-                }})
+        UserModel userModel1 = new UserModel();
+        userModel1.setName(generateString(10));
+        userModel1.setJob(generateString(6));
+
+        UserModel userModel = given()
+                .body(data)
                 .post("/api/users")
                 .then()
                 .statusCode(201)
-                .body("id", not(empty));
+                .body("id", not(emptyString()))
+                .extract().body().as(UserModel.class);
 
         given()
-                .body(userModel)
+                .body(userModel1)
                 .put("/api/users" + userModel.getId())
-                .then().log().all()
+                .then()
                 .statusCode(200)
-                .body("updatedAt", not(empty));
+                .body("updatedAt", not(emptyString()));
     }
 }
