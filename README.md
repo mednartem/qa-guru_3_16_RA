@@ -1,5 +1,6 @@
 Rest assured tests for https://reqres.in
-Here is updated templates for allure report
+
+There are new templates for allure report in resources (request, response)
 
 ### Dependencies:
 
